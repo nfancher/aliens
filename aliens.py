@@ -24,8 +24,9 @@ space_list["main_room"] = space("entrance description",
                                  "left": "entrance_hallway_left",
                                  "right": "entrance_hallway_right"})
 space_list["admin_office"] = space("admin_office description", {})
-space_list["entrance_hallway_left"] = space("entrance hallway left description", {"back" : "main_room"})
-
+space_list["entrance_hallway_left"] = space("entrance hallway left description", {"back" : "main_room",
+                                                                                  "forward":"firing_range"})
+space_list["firing_range"] = space("firing range description", {"back" : "entrance_hallway_left"})
 current_room = space_list["main_room"]
 def main  ():
     not_done = True
