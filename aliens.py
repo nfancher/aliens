@@ -4,11 +4,13 @@
 
 space_list = {}
 current_room = None
+inventory = []
 class space(object):
 
-    def __init__(self, description, movement):
+    def __init__(self, description, movement, items=None):
         self.description = description
         self.movement = movement
+        self.items = items
 
     def move(self, direction):
         global current_room
@@ -18,11 +20,22 @@ class space(object):
             print "Can't go that way!"
         print(current_room.description)
 
+    def remove_item(self, item):
+        self.items.remove(item)
+
+    def get_items(self):
+        return self.items
+
+def pickup_dollar():
+    global inventory
+    if "dollar" not in inventory and "dollar" in current_room.get_items():
+        current_room.remove_item("dollar")
+        inventory.append("dollar")
 
 space_list["main_room"] = space("the main room, a room with a a hallway going left and right going deeper into the base.",
                                 {"forward": "admin_office",
                                  "left": "entrance_hallway_left",
-                                 "right": "entrance_hallway_right"})
+                                 "right": "entrance_hallway_right"}, ["dollar"])
 space_list["entrance_hallway_left"] = space("the left hallway, leading to more buildings.",
                                 {"forward": "firing_range",
                                  "right": "hallway_3"})
@@ -83,9 +96,19 @@ current_room = space_list["main_room"]
 def main  ():
     not_done = True
     while(not_done):
-        action = raw_input("Where do you want to go? ")
+        input_row = raw_input("What do you want to do? ")
+        input_array = input_row.split(" ")
+        action = input_array[0]
         if action == "forward" or action == "left" or action == "right" or action == "back":
             current_room.move(action)
+        elif action == "pickup":
+            if input_array[1] == "dollar":
+                pickup_dollar()
+        elif action == "look":
+            print current_room.description
+            print "items:{0}".format(current_room.get_items())
+        elif action == "inventory":
+            print "Inventory:{0}".format(inventory)
         else:
             print "I don't understand {0}".format(action)
 
