@@ -31,21 +31,30 @@ def pickup_dollar():
     if "dollar" not in inventory and "dollar" in current_room.get_items():
         current_room.remove_item("dollar")
         inventory.append("dollar")
-
+def put_dollar_token_machine():
+    global inventory
+    if "dollar" in inventory and "token_machine" in current_room.get_items():
+        inventory.remove("dollar")
+        inventory.append("token")
+def play_video_game():
+    global inventory
+    if "token" in inventory and "video_game" in current_room.get_items():
+        inventory.remove ("token")
+        inventory.append("clue")
 space_list["main_room"] = space("the main room, a room with a a hallway going left and right going deeper into the base.",
                                 {"forward": "admin_office",
                                  "left": "entrance_hallway_left",
-                                 "right": "entrance_hallway_right"}, ["dollar"])
+                                 "right": "entrance_hallway_right"},["dollar"])
 space_list["entrance_hallway_left"] = space("the left hallway, leading to more buildings.",
                                 {"forward": "firing_range",
                                  "right": "hallway_3"})
-space_list["entrance_hallway_right"] = space("the right hallway, leading to more buildings.",
+space_list["entrance_hallway_right"] = space("the right entrance hallway, leading to more buildings.",
                                 {"forward": "research_building",
                                  "left": "baracks_1"})
 space_list["admin_office"] = space("the office for the base. complete with a secretary desk and wilting potted plants. papers have been left scattered over the desk.",
 
                                      {"left": "entrance_hallway_left",
-                                 "right": "entrance_hallway_right"})
+                                 "right": "entrance_hallway_right"},["token_machine"])
 space_list["firing_range"] = space("the indoor firing range. a room with a firing range with multiple guns and dummies with targets. guns are stowed away in compartments, with multiple missing. the dummies have been knocked down. ",
                                    {"right": "hallway_3",
                                  "back":"entrance_hallway_left"})
@@ -84,17 +93,21 @@ space_list["hallway_7"] = space("a hallway leading to the pool and a small hallw
                                 { "forward": "pool",
                                   "back": "hallway_6",
                                   "right": "hallway_8"})
+space_list["research_building"] = space("a white room full of scientific/medical equipment and several large cabinets and freezers. everything is dusty but undisturbed. a deafining silence and otherworldly feel accompanies this room. several things have locks, labeled classified.",
+                                {  "back": "entrance_hallway_right",
+                                  "left": "baracks_1"})
 space_list["hallway_8"] = space("a small hallway that leads to the officer quarters and an emergency exit.",
                                 {"back": "hallway_7",
                                   "right": "officer_quarters"})
 space_list["officer_quarters"] = space("officer quarters. looking almost exactly similar to the state of the baracks, it is messy. there is an emergency exit up forward. it has been left open a crack.",
                                 { "forward": "exit",
-                                  })
+                                  },["video_game"])
 space_list["exit"] = space("you have gone through the base and left. end of game.",
                                 { })
 current_room = space_list["main_room"]
 def main  ():
     not_done = True
+    print current_room.description
     while(not_done):
         input_row = raw_input("What do you want to do? ")
         input_array = input_row.split(" ")
@@ -104,6 +117,12 @@ def main  ():
         elif action == "pickup":
             if input_array[1] == "dollar":
                 pickup_dollar()
+        elif action == "put":
+            if input_array[1] == "dollar" and input_array[2] == "token" and input_array[3] == "machine":
+                put_dollar_token_machine()
+        elif action == "play":
+            if input_array[1] == "video" and input_array[2] == "game":
+                play_video_game()
         elif action == "look":
             print current_room.description
             print "items:{0}".format(current_room.get_items())
